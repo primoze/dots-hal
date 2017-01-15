@@ -35,6 +35,24 @@ struct system_timer : public os::timer::timer0 {
     static uint32_t get_micros();
     static uint32_t get_current_micros();
 
+    static constexpr uint32_t prescaler_factor = 64;
+    static constexpr uint32_t ticks_per_interrupt = 256;
+
+    static constexpr uint32_t clk_per_us = F_CPU / 1000000l;
+
+    static constexpr uint32_t clk_to_us(uint32_t cycles) {
+        return cycles / clk_per_us;
+    }
+
+    static constexpr uint32_t us_to_clk(uint32_t us) {
+        return us * clk_per_us;
+    }
+
+    static constexpr uint32_t us_per_interrupt = (prescaler_factor * ticks_per_interrupt) / clk_per_us;
+    static constexpr uint32_t ms_per_interrupt = us_per_interrupt / 1000;
+    static constexpr uint32_t frac_per_interrupt = us_per_interrupt % 1000;
+    static constexpr byte_t max_frac = 1000 / frac_per_interrupt;
+
 private:
     static volatile uint32_t millis;
     static volatile byte_t fraction;

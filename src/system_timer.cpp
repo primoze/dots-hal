@@ -1,12 +1,12 @@
 /*
  * Copyright 2017 Primoz Erjavec
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,27 +20,6 @@
 
 namespace os {
 namespace hal {
-
-namespace {
-
-
-static constexpr uint32_t prescaler_factor = 64;
-static constexpr uint32_t ticks_per_interrupt = 256;
-
-static constexpr uint32_t clk_per_us = F_CPU / 1000000l;
-
-static constexpr uint32_t clk_to_us(uint32_t cycles) {
-    return cycles / clk_per_us;
-}
-
-// Prescaler factor is 64, and it takes 256 ticks to overflow
-static constexpr uint32_t us_per_interrupt = clk_to_us(prescaler_factor * ticks_per_interrupt);
-static constexpr uint32_t ms_per_interrupt = us_per_interrupt / 1000;
-static constexpr uint32_t frac_per_interrupt = us_per_interrupt % 1000;
-static constexpr byte_t max_frac = 1000 / frac_per_interrupt;
-
-
-}
 
 
 volatile uint32_t system_timer::millis = 0;
