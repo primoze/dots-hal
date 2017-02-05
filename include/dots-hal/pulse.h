@@ -49,7 +49,7 @@ uint32_t read_pulse(uint32_t timeout, bool state) {
     uint32_t max = os::hal::system_timer::us_to_clk(timeout) / 16;
 
     _pin::set_mode(os::pin_mode::input);
-    uint32_t len = get_pulse_width(OS_PIOREG(_pin::pin), _pin::pin_bit, state, max);
+    uint32_t len = get_pulse_width(OS_PIOREG(_pin::pin::addr), _pin::pin_bit, state, max);
 
     if (!len) {
         return 0;

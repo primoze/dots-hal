@@ -16,7 +16,10 @@
 
 #include <dots-hal/system_timer.h>
 
+#include <dots-core/bits.h>
 #include <dots-core/util.h>
+
+#include <avr/interrupt.h>
 
 namespace os {
 namespace hal {
@@ -28,15 +31,15 @@ volatile byte_t system_timer::fraction = 0;
 
 void system_timer::init() {
     // Fast PWM
-    os::set_bit(_MMIO_BYTE(_timer_type::tccra), _timer_type::wgm1);
-    os::set_bit(_MMIO_BYTE(_timer_type::tccra), _timer_type::wgm0);
+    os::set_bit(_MMIO_BYTE(_timer_type::tccra::addr), _timer_type::tccra::wgm1);
+    os::set_bit(_MMIO_BYTE(_timer_type::tccra::addr), _timer_type::tccra::wgm0);
 
     // CLK/64
-    os::set_bit(_MMIO_BYTE(_timer_type::tccrb), _timer_type::cs1);
-    os::set_bit(_MMIO_BYTE(_timer_type::tccrb), _timer_type::cs0);
+    os::set_bit(_MMIO_BYTE(_timer_type::tccrb::addr), _timer_type::tccrb::cs1);
+    os::set_bit(_MMIO_BYTE(_timer_type::tccrb::addr), _timer_type::tccrb::cs0);
 
     // Enable interrupt
-    os::set_bit(_MMIO_BYTE(_timer_type::timsk), _timer_type::toie);
+    os::set_bit(_MMIO_BYTE(_timer_type::timsk::addr), _timer_type::timsk::toi);
 }
 
 
@@ -67,9 +70,9 @@ uint32_t system_timer::get_micros() {
 uint32_t system_timer::get_current_micros() {
     os::util::keep_interrupt_flag keep;
     uint32_t ms = millis;
-    uint8_t ticks = _MMIO_BYTE(_timer_type::tcnt);
+    uint8_t ticks = _MMIO_BYTE(_timer_type::tcnt::addr);
 
-    if(os::get_bit(_MMIO_BYTE(_timer_type::tifr), _timer_type::tov) && (ticks < 255)) {
+    if(os::get_bit(_MMIO_BYTE(_timer_type::tifr::addr), _timer_type::tifr::toi) && (ticks < 255)) {
         ++ms;
     }
 

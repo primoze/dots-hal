@@ -25,8 +25,8 @@
 namespace os {
 namespace hal {
 
-struct system_timer : public os::timer::timer0 {
-    typedef os::timer::timer0 _timer_type;
+struct system_timer : public os::timer::timer0_regs {
+    typedef os::timer::timer0_regs _timer_type;
 
     static void init();
     static void tick();
